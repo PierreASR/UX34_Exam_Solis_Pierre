@@ -1,14 +1,126 @@
 #VRML_SIM R2019b utf8
 WorldInfo {
-  info [
-  ]
 }
 Viewpoint {
-  orientation -0.7 0.7 0.2 0.75
-  position 1.2 1.6 2.3
-
+  orientation 0.15611699462568146 -0.9572324040395053 -0.24358491054618744 4.267370898946323
+  position 0.9644309663606223 0.8252617928352884 -0.5486321668918541
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
+}
+Floor {
+}
+Robot {
+  translation 0 0.075 0
+  children [
+    DEF GR_BODY Group {
+      children [
+        DEF ROBOT_BODY Shape {
+          appearance PBRAppearance {
+            baseColor 0.9869535362783246 0.1892576485847257 0.11616693369954986
+          }
+          geometry DEF G_BODY Box {
+            size 0.25 0.07 0.1
+          }
+        }
+        DEF CRAZY_WHEEL Transform {
+          translation 0.11 -0.05 0
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.05510032806897078 0 0.9981994354161898
+                roughness 1
+                metalness 0
+              }
+              geometry DEF G_CRAZYWHEEL Sphere {
+                radius 0.015
+              }
+            }
+          ]
+        }
+      ]
+    }
+    DEF WHEEL1_JOINT HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 1
+        anchor -0.05 0 0.06
+      }
+      device [
+        PositionSensor {
+          name "encoder1"
+          resolution 0.00524
+        }
+        RotationalMotor {
+          name "motor_right"
+          maxVelocity 60
+          maxTorque 0.59
+        }
+      ]
+      endPoint DEF WHEEL1 Solid {
+        translation -0.05 0 0.06
+        rotation -1 0 0 1.570799693899574
+        children [
+          DEF SH_WHEEL Shape {
+            appearance DEF C_WHEEL PBRAppearance {
+              baseColor 0 0 0
+              roughness 1
+              metalness 0
+            }
+            geometry DEF G_WHEEL Cylinder {
+              height 0.02
+              radius 0.075
+            }
+          }
+        ]
+        boundingObject USE G_WHEEL
+        physics Physics {
+        }
+      }
+    }
+    DEF WHEEL2_JOINT HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 1
+        anchor -0.05 0 -0.06
+      }
+      device [
+        PositionSensor {
+          name "encoder2"
+          resolution 0.00524
+        }
+        RotationalMotor {
+          name "motor_left"
+          maxVelocity 60
+          maxTorque 0.59
+        }
+      ]
+      endPoint Solid {
+        translation -0.05 0 -0.06
+        rotation -1 0 0 1.5708003061004252
+        children [
+          Shape {
+            appearance USE C_WHEEL
+            geometry USE G_WHEEL
+          }
+        ]
+        name "solid(1)"
+        boundingObject USE G_WHEEL
+        physics Physics {
+        }
+      }
+    }
+    DistanceSensor {
+      translation 0.12 0 -0.05
+      name "dis__sensor1"
+    }
+    DistanceSensor {
+      translation 0.12 0 0.05
+      name "dis_sensor2"
+    }
+  ]
+  boundingObject USE GR_BODY
+  physics Physics {
+    mass 1.5
+  }
+  controller "UX34_Exam_Solis_Pierre"
 }
