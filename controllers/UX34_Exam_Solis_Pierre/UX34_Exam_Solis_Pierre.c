@@ -13,6 +13,7 @@
 #include <webots/robot.h>
 #include <webots/motor.h>
 #include <webots/distance_sensor.h>
+#include <webots/keyboard.h>
 
 #include <stdio.h>
 /*
@@ -21,46 +22,69 @@
 #define TIME_STEP 64
 #define VELOCITY 3
 #define VEL_INCREMENT 0.2
-/*
- * This is the main program.
- * The arguments of the main function can be specified by the
- * "controllerArgs" field of the Robot node
- */
+
+int pressed_key;
+double velocity;
+double VelInc;
+
+
+double Velocity (double V) {
+  
+double velocity; 
+
+    velocity = V/0.075;
+    return(velocity);
+    }
+    
+double IncVel (double i) {
+
+double VelInc;
+
+    VelInc = i/0.075;
+    return(VelInc);
+    }
+
 int main(int argc, char **argv) {
-  /* necessary to initialize webots stuff */
+  
   wb_robot_init();
 
-  /*
-   * You should declare here WbDeviceTag variables for storing
-   * robot devices like this:
-   *  WbDeviceTag my_sensor = wb_robot_get_device("my_sensor");
-   *  WbDeviceTag my_actuator = wb_robot_get_device("my_actuator");
-   */
+ 
    WbDeviceTag left = wb_robot_get_device ("motor_left");
    WbDeviceTag right = wb_robot_get_device ("motor_right");
    
-   WbDeviceTag posision1 = wb_robot_get_device ("encoder1");
+   WbDeviceTag position1 = wb_robot_get_device ("encoder1");
    WbDeviceTag position2 = wb_robot_get_device ("encoder2");
    
    WbDeviceTag dis_left = wb_robot_get_device ("dis_senosr1");
-   WbDeviceTag dis_rigth = wb_robot_get_device ("dis_sensor2");
-  /* main loop
-   * Perform simulation steps of TIME_STEP milliseconds
-   * and leave the loop when the simulation is over
-   */
+   WbDeviceTag dis_right = wb_robot_get_device ("dis_sensor2");
+  
+   wb_motor_set_position(left, INFINITY);
+   wb_motor_set_position(right, INFINITY);
+      
+   wb_distance_sensor_enable(dis_left, TIME_STEP);
+   wb_distance_sensor_enable(dis_right, TIME_STEP);
+   
+   wb_keyboard_enable(TIME_STEP);
+   
+    
   while (wb_robot_step(TIME_STEP) != -1) {
-    /*
-     * Read the sensors :
-     * Enter here functions to read sensor data, like:
-     *  double val = wb_distance_sensor_get_value(my_sensor);
-     */
-
-    /* Process sensor data here */
-
-    /*
-     * Enter here functions to send actuator commands, like:
-     * wb_motor_set_position(my_actuator, 10.0);
-     */
+  
+    velocity = Velocity(VELOCITY);
+    VelInc = IncVel(VEL_INCREMENT);
+    
+    pressed_key = wb_keyboard_get_key();
+    
+    if (pressed_key == 'S') {
+       velocity = velocity + VelInc;
+    }
+     else if (pressed_key == 'A') {
+      velocity = velocity - VelInc;
+     }
+    
+  
+       
+    wb_motor_set_velocity(left, -velocity);
+    wb_motor_set_velocity(right, -velocity);
   };
 
   /* Enter your cleanup code here */
