@@ -11,12 +11,16 @@
  * <webots/motor.h>, etc.
  */
 #include <webots/robot.h>
+#include <webots/motor.h>
+#include <webots/distance_sensor.h>
+
 
 /*
  * You may want to add macros here.
  */
 #define TIME_STEP 64
-
+#define VELOCITY 3
+#define VEL_INCREMENT 0.2
 /*
  * This is the main program.
  * The arguments of the main function can be specified by the
